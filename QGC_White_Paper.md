@@ -70,21 +70,80 @@ From these, we compute both sides of the identity. The `|LHS - RHS|` gap is our 
 
 ---
 
-## 2. The Geometric Virtual Machine (G‑VM)
+---
 
-*(Summary: The G-VM is a hybrid classical/quantum computer. It uses a classical geometric compiler for Clifford+T gates on 2 qubits and an SVD-shadow predictor for `n` qubits. Its AI pilot uses the Trajectory Bridge (TB-2 and TB-4) and the `κ` invariant to schedule constant-cost UL-2/UL-3 hardware refreshes when the geometry becomes too complex.)*
+## **Section 2: The Geometric Virtual Machine (G‑VM) & the Trajectory Bridge**
+
+### 2.1 Architecture and execution model
+
+**Goal:** Replace state‑vector evolution with **invariant propagation** and **certified bounds**.
+
+**Hybrid design:** The G-VM is a hybrid quantum-classical architecture.
+*   **Classical side (fast):** The G-VM's core logic runs on a classical computer. It performs invariant updates, applies the SU(2) certainty law on a 2D "shadow" of the state, uses `κ`-aware scheduling, and performs algebraic inversions with the UL-2/UL-3 laws.
+*   **Quantum side (minimal):** A physical quantum co-processor is used sparingly to run **constant‑depth** circuits that obtain raw **overlaps** and **moments** (no tomography).
+
+**Compiler core:** For 2-qubit systems, the G-VM contains an **exact geometric compiler for the universal Clifford+T gate set.** This compiler updates the system's geometric state (a set of 15 Pauli invariants) using fast, classical algebraic rules. For systems with more than 2 qubits (`n>2`), the G-VM falls back to a robust **SVD-shadow predictor** and applies the exact SU(2) law within that projected subspace.
+
+### 2.2 The Trajectory Bridge (TB-4 point; TB-2 bound)
+
+The Trajectory Bridge is the G-VM's predictive engine, allowing it to calculate the geometric consequences of an operation. It has two components:
+
+**TB‑4 (Point Estimate):** At each step, the G-VM uses its SVD-shadow method to find the best 2D projection of the `{A,B,O}` state triad. It then applies the **exact SU(2) certainty law** within this shadow to compute a precise point estimate for the next state's key properties. This is the G-VM's fast, default prediction path.
+
+**TB‑2 (Certified Interval):** The G-VM uses the Gram‑determinant identity for a triad:
+`κ² = 1 - (a+b+c) + 2*sqrt(a*b*c)*cos(γ_ABO)`
+where `a=F_AB`, `b=F_AO`, `c=F_BO`. By enforcing the physical constraint `|cos(γ_ABO)| ≤ 1`, we derive a **closed‑form interval** that provides a certified bound on the unknown fidelity `c`:
+
+    c_± = (sqrt(a*b) ± sqrt((1-a)(1-b) - κ²))²
+
+This interval is real if and only if `(1-a)(1-b) ≥ κ²`.
+
+**VM policy (AI pilot):** The G-VM's scheduler uses both bridges together. It first calculates the fast TB-4 point estimate. It then uses the TB-2 interval to get a certified error bar. If the interval is **narrow**, it trusts its classical prediction. If the interval is **wide**, it indicates high geometric complexity, and the pilot **escalates** to a single, constant-cost hardware audit using the UL-2/UL-3 sensors.
 
 ---
 
-## 3. A Resource Theory of Context
+## **Section 3: A Resource Theory of Context**
 
-*(Summary: We define `κ`, a geometric invariant, as a measure of a system's multi-dimensional complexity. We prove `κ` is a resource monotone under unital noisy channels, establishing a "Second Law of Context" where `κ` is irreversibly consumed by noise.)*
+### 3.1 `κ` as geometric complexity
+
+Given a triad of states `{A,B,O}`, we define the invariant `κ` via the Gram determinant:
+`κ² = det(G) = 1 - (F_AB + F_AO + F_BO) + 2*sqrt(F_AB*F_AO*F_BO)*cos(γ_ABO)`
+(using Uhlmann fidelities for mixed states). A value of `κ=0` indicates the triad is "flat" and can be perfectly described by 2D (qubit) geometry. A large `κ` signals irreducible, high-dimensional geometric content.
+
+### 3.2 Formal monotonicity (unital CPTP)
+
+**Theorem (`κ`-monotone for unital CPTP).** If a **unital** CPTP channel `Φ` (a type of noise) acts identically on the triad, then:
+`κ(Φ(ρ_A), Φ(ρ_B), Φ(ρ_O)) ≤ κ(ρ_A, ρ_B, ρ_O)`
+
+*Proof sketch.* The Uhlmann fidelity is known to contract under CPTP maps (Data Processing Inequality). This means the "side lengths" of the geometric triangle `d_ij = arccos(sqrt(F_ij))` can only shrink. `κ` is a measure of the triangle's "area." On the constant-curvature manifold of quantum states, contracting the sides cannot increase the area. Therefore, `κ` cannot increase under this type of noise. (Full proof in Appendix A).
+
+### 3.3 The Second Law of Context
+
+The proven monotonicity of `κ` establishes it as a **fundamental resource** in quantum information, similar to entanglement. It means that `κ`, our measure of geometric complexity, is a quantity that can be "consumed" by noisy, irreversible processes but not created. This defines a **Second Law of Context, `dS_κ/dt ≥ 0`** (for a suitable entropy `S_κ`), which provides a new, geometric arrow of time. This is observed directly in our density-matrix simulations of decoherence.
 
 ---
 
-## 4. Threshold Physics & the `κ`‑Aware Scheduler
+## **Section 4: Threshold Physics & the `κ`-Aware Scheduler**
 
-*(Summary: We have empirically validated a universal threshold at `κ* ≈ 0.85`, where 2D geometric approximations break down with an error amplification of ~11.9x. We link this threshold to the holomorphic sectional curvature of the quantum state space `CP^(N-1)`.)*
+### 4.1 Empirical threshold at `κ* ≈ 0.85`
+
+Our benchmark sweeps across systems of increasing dimension (SU(2) to SU(8)) reveal a sharp, universal "phase transition" in the behavior of our SVD-shadow predictor.
+*   For states with `κ < 0.85`, the 2D shadow is a near-perfect approximation, and predictions are highly accurate.
+*   For states with `κ > 0.85`, the predictor's error amplifies dramatically, by a factor of **~11.9x**.
+This empirical knee **[FIGURE 1]** proves that `κ` is a reliable diagnostic for the breakdown of simple geometric approximations.
+
+### 4.2 The Curvature Bracket: `κ* ∈ [0.816, 0.866]`
+
+This empirical threshold has a deep theoretical origin in the differential geometry of the quantum state space (`CP^(N-1)`). The first-order correction to any 2D geometric approximation scales with the **holomorphic sectional curvature** of this space. By re-expressing this curvature term in the language of our `κ` invariant, we can derive a dimension-independent bracket where these corrections become dominant:
+`κ* ∈ [0.816, 0.866]`
+This provides a fundamental physical justification for the `κ ≈ 0.85` threshold observed in our experiments. (Derivation in Appendix C).
+
+### 4.3 The `κ`-Aware Scheduler (The AI Pilot)
+
+The G-VM's scheduler is an intelligent control system that uses these principles. Its policy is simple and powerful:
+1.  **Compute** the evolution using the fast, classical geometric engine.
+2.  **Sense** the geometric complexity at each step by calculating `κ`.
+3.  **React:** If `κ` exceeds the `0.85` threshold, **trigger a hardware refresh.** The G-VM performs a small, constant-cost UL-2/UL-3 measurement on the physical quantum hardware to get a new, perfectly accurate "GPS fix" on the state's geometry before proceeding. This policy is implemented and validated in our final G-VM prototype.
 
 ---
 
@@ -187,3 +246,4 @@ The `2*Tr(ρ_S²)` terms cancel, leaving:
 Thus, `LHS = RHS`. Q.E.D.
 
 ---
+
