@@ -170,14 +170,14 @@ The GPVI is a **derived equality** within standard quantum mechanics, not a viol
 
 ---
 
-## 8. Reproducibility & Artifacts
+## **8. Reproducibility & Artifacts (Complete Section)**
 
-A full suite of validation scripts is provided in the supplementary materials, allowing for the independent verification of every claim in this paper. Key artifacts include:
-*   `proof_01_moment_cycle.py`: Validates the foundational theorem.
-*   `proof_03_kappa_physics.py`: Validates the behavior of the `κ` invariant and the TB-2 interval.
-*   `proof_05_geom_compiler.py`: Validates the 1-qubit geometric compiler.
-*   `geomvm_hybrid_cliffordT_final.py`: The complete G-VM 1.0 prototype with a `κ`-aware scheduler and hardware-interfacing UL-2 refresh.
-*   `qgc_nopeek_context_cert_ibm_hardware.py`: The script used to perform the GPVI validation on IBM Brisbane.
+*   **Core theory & protocols:** `QGC_White_Paper.md` (this document).
+*   **Mathematical validation (`κ` physics, SU(2)):** `proof_03_kappa_physics.py`.
+*   **Density‑matrix validation (QuTiP):** `proof_03_kappa_physics.py` (Part B).
+*   **Quantum‑circuit validation (G-VM engine):** `geomvm_hybrid_cliffordT_final.py`.
+*   **Dimensional‑complexity threshold (“smoking gun”):** `cct-dimensional-complexity-validation.py`
+*   **Hardware Validation (UL-2 & GPVI):** `qgc_nopeek_context_cert_ibm_hardware.py`
 
 ---
 
