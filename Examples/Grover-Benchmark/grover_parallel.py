@@ -273,31 +273,44 @@ def main():
     print("\n=== Grover Certified Parallel Benchmark ===")
     print(f"N≈2^{args.n} | M={args.M} | r={args.r} | {args.queries} queries x {args.repeats} repeats | concurrency={args.concurrency}")
 
-    # Pre-generate all random problem instances to ensure the benchmark only times the solver, not the problem generation.
+    # --- Step 1: Problem Generation ---
+    t_setup_start = time.perf_counter()
+    print("\nGenerating problem instances... (this can take time for large M)")
     total_runs = args.queries * args.repeats
-    all_marks = [random_marks(args.n, args.M, seed=i) for i in range(total_runs)]
-    
+    all_marks = []
+    for i in range(total_runs):
+        all_marks.append(random_marks(args.n, args.M, seed=i))
+        # Provide a progress update without spamming the console
+        if (i + 1) % (max(1, total_runs // 20)) == 0 or (i + 1) == total_runs:
+            print(f"  ...generated {i + 1}/{total_runs} instances.", end='\r')
+    print("\nGeneration complete.")
+
     base_job_args = {"n": args.n, "r": args.r, "eps": args.eps, "prec_digits": args.prec, "certify": not args.no_certify}
     all_jobs = [{"marks": marks, **base_job_args} for marks in all_marks]
-    
-    # A warmup run is a standard practice in benchmarking to exclude one-time costs
-    # like JIT compilation or OS process creation from the final measurement.
+    t_setup_end = time.perf_counter()
+
+    # --- Step 2: Solver Execution (Warmup + Benchmark) ---
+    print("Executing solver (warmup run)...")
     with multiprocessing.Pool(processes=args.concurrency) as pool:
         pool.map(parallel_worker, all_jobs[:args.queries], chunksize=1)
 
-    # The main benchmark run.
+    print("Executing solver (benchmark run)...")
     t_start = time.perf_counter()
     with multiprocessing.Pool(processes=args.concurrency, maxtasksperchild=128) as pool:
         results = pool.map(parallel_worker, all_jobs, chunksize=1)
     t_end = time.perf_counter()
 
-    wall_time_s = t_end - t_start
-    tasks_per_sec = total_runs / wall_time_s
-    
-    print(f"\nTotal wall time: {wall_time_s:.3f}s for {total_runs} queries.")
-    print(f"Throughput: {tasks_per_sec:.2f} certified queries/sec")
+    # --- Step 3: Reporting ---
+    setup_time_s = t_setup_end - t_setup_start
+    solver_time_s = t_end - t_start
+    tasks_per_sec = total_runs / solver_time_s if solver_time_s > 0 else float('inf')
+
+    print(f"\nProblem Generation Time: {setup_time_s:.3f}s")
+    print(f"Solver Throughput: {tasks_per_sec:.2f} certified queries/sec")
     sample = results[-1]
     print(f"Sample result: M={sample['M']}  θ={sample['theta']:.6e}  amp_W={sample['amp_W']:.6f}  (worker time: {sample['elapsed_ms']:.2f}ms)")
+    print(f"Solution Execution Time: {solver_time_s:.3f}s for {total_runs} queries.")
+
 
 if __name__ == "__main__":
     # Using the "spawn" start method is crucial for stability and portability,
