@@ -95,14 +95,6 @@ Therefore, this entire massive problem collapses into two simple steps:
 >
 > It provides the intelligence required to manage intractable search problems, replacing brute-force computation with geometric insight.
 
-**Why this is better:**
-*   It directly addresses the "what it ACTUALLY does" question.
-*   It explicitly states that the output is "strategic data," not "a marked item."
-*   It provides a bulleted list of the exact, valuable decisions a user can make with this data.
-
----
-
-
 #### **4. The Benchmark: Performance at Scale**
 
 We ran a benchmark to solve 128 of these intractable problems, first on a single CPU core and then in parallel across six cores.
