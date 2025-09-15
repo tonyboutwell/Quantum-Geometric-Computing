@@ -19,6 +19,7 @@ This tool is for anyone in fields that rely on finding the best configuration in
 
 To demonstrate the exponential performance gap between our geometric method and traditional simulation, we ran a challenging problem at the edge of what a brute-force validator can handle: finding the MaxCut of a 14-node, 3-regular random graph.
 
+#### python qaoa_maxcut_invariant_predictor_v2.py --graph rrg --n 14 --d 3 --grid 25x25 --validate 1
 ```
 === QAOA p=1 MaxCut — Invariant Predictor (v2, ε-certified) ===
 Graph: rrg | n=14 | |E|=21 | degree range=[3,3]
