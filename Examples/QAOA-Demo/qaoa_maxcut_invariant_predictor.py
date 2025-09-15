@@ -405,7 +405,7 @@ def main():
     t_cert = time.time() - t0_cert
 
     # --- Step 4: Print summary report ---
-    print("\n=== QAOA p=1 MaxCut — Invariant Predictor (v2, ε-certified) ===")
+    print("\n=== QAOA p=1 MaxCut — Invariant Predictor ===")
     print(f"Graph: {args.graph} | n={n} | |E|={len(E)} | degree range=[{min(deg)},{max(deg)}]")
     print(f"Grid:  {args.grid}  |  scan in {'mpmath' if (args.mpgrid and mp is not None) else 'float64'}")
     print("\nRESULT (geometry-only; no 2^n objects):")
