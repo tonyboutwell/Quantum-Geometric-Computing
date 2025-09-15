@@ -4,6 +4,10 @@
 
 This tool is a strategic analyzer for quantum search problems. It does not find a specific solution; instead, it provides a far more valuable result: a certified, quantitative assessment of the entire search space. For any given large-scale search problem, it instantly calculates the exact probability of success, the optimal number of search steps, and the overall problem difficulty. It processes thousands of these strategic assessments per second on a standard multicore machine
 
+### Who Could Use It and For What:
+This tool is for anyone whose problem can be framed as "finding a needle in a haystack."
+*   **Algorithm Designers:** They can use it to design and stress-test new search algorithms. It provides a perfect, noise-free oracle to benchmark against, allowing them to explore the performance of their ideas over astronomical time scales (r=10^12) that are physically impossible to test otherwise.
+*   **Database & Optimization Experts:** For a certain class of complex optimization problems (NP-complete problems) that can be mapped to a search, this tool can rapidly estimate the solution density and predict the performance of a quantum-inspired search heuristic.
 ---
 ### RESULTS:
 ---
