@@ -8,6 +8,22 @@ This tool is a strategic analyzer for quantum search problems. It does not find 
 This tool is for anyone whose problem can be framed as "finding a needle in a haystack."
 *   **Algorithm Designers:** They can use it to design and stress-test new search algorithms. It provides a perfect, noise-free oracle to benchmark against, allowing them to explore the performance of their ideas over astronomical time scales (r=10^12) that are physically impossible to test otherwise.
 *   **Database & Optimization Experts:** For a certain class of complex optimization problems (NP-complete problems) that can be mapped to a search, this tool can rapidly estimate the solution density and predict the performance of a quantum-inspired search heuristic.
+
+## Demo (what to run)
+
+> Python 3.10+, `pip install mpmath numpy` (plus `qiskit-aer` or `qutip` only if you want the hardware-style validations).
+
+**Single process (baseline):**
+
+```bash
+python grover_parallel.py --n 40 --M 1000 --queries 128 --concurrency 1 --repeats 1
+```
+
+**Multi-process scale-out (e.g., 6 workers):**
+
+```bash
+python grover_parallel.py --n 40 --M 1000 --queries 128 --concurrency 6 --repeats 1
+```
 ---
 ### RESULTS:
 ---
