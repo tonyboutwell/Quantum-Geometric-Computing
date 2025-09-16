@@ -14,7 +14,7 @@ RESULTS:
 
 ---
 
-### python proof_02_purity_bridge.py
+### proof_02_purity_bridge.py
 Verification of the Universal Law 2 (UL-2), the Purity Bridge, for a triad of states (N=3). This directly supports the claim that the G-VM can algebraically solve for a missing overlap using one purity and two other overlap measurements. This is a key operational primitive.
 
 RESULTS: 
