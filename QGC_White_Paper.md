@@ -222,13 +222,3 @@ QGC is a **classical, invariant‑first** paradigm: UCE composes geometry in fix
 
   * **“Faddeev–Leverrier adjugate recurrence with complex‑coefficient retention, driven by invariant‑supplied $\{c_k\}$ and evaluated by series‑division.”**
   * Interval propagation: disc arithmetic for Newton–Girard and series‑division; certification policy.
-
----
-
-### Notes on Claims and Language (for counsel)
-
-* We state **polynomial‑time at fixed order** for moment composition; we avoid global superlatives (“faster than any computer”).
-* UGAF is spelled out as **cFL‑Adj + series‑division** with **complex‑coefficient retention** and **invariant‑supplied $\{c_k\}$** (no dense $U$).
-* DUL is framed as an **interval‑certified** mapping from $\{\mathrm{Tr}(H^k)\}$ to $\{p_m\}$ using a spectral‑radius bound.
-
----
