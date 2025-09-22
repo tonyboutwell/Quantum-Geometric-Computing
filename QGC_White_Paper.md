@@ -20,7 +20,14 @@ Rather than evolve 2^n amplitudes, QGC composes a small set of **global invarian
 
 ## 2. The Master Law: Cayley–Hamilton Flow in Moment Space
 
-Let `U` be a d x d operator with characteristic polynomial `chi_U(λ) = λ^d + Σ_{k=1 to d} a_k λ^(d-k)` and power sums `p_m = Tr(U^m)`. Complex Newton–Girard recovers the coefficients {a_k} from the moments {p_m}. **Any observable sequence** that is linear in powers of `U` obeys the **same order-d linear recurrence**:
+Let `U` be a d x d operator with characteristic polynomial `chi_U(λ) = λ^d + Σ_{k=1 to d} a_k λ^(d-k)` and power sums `p_m = Tr(U^m)`. Complex Newton–Girard recovers the coefficients {a_k} from the moments {p_m}:
+
+**Newton–Girard Bridge:**
+```
+k*e_k = Σ_{j=1 to k} (-1)^(j-1) * e_(k-j) * p_j,  where a_k = (-1)^k * e_k
+```
+
+**Any observable sequence** that is linear in powers of `U` obeys the **same order-d linear recurrence**:
 
     O_m = - Σ_{k=1 to min(d,m)} a_k * O_{m-k}
 
@@ -57,6 +64,10 @@ UGE are **model-agnostic** maps from moment lists to observables, depending only
 *   **Input:** `{p_m = Tr(U^m)}` for m ≤ d, and `d` seed amplitudes `g_0...g_{d-1}`.
 *   **Method:** Compute `{a_k}` via complex Newton–Girard and propagate `g_m` by the CH recurrence.
 *   **Output:** `g_m = <y|U^m|x>` for any `m`.
+*   **The UGAF Generating Functional:**
+    ```
+    G(z) = Σ_{m≥0} ⟨y|U^m|x⟩ z^m = ⟨y|adj(I-zU)|x⟩ / χ_U(z)
+    ```
 *   **Status:** Aligns with direct powers in verification; at scale we use **cFL-Adj + series** with **interval certification** from DUL.
 
 ### 3.4 Two-Point/Three-Point Series
@@ -84,9 +95,30 @@ This means spectral edges, overlaps, amplitudes, and correlators are not separat
 
 **UCE:** Builds low-order `{p_m}` and converts to `{c_k}`/`{a_k}` by complex Newton–Girard—**without** constructing dense `U`. **Dynamic Geometric Fusion** contracts `m` replicas locally; complexity is polynomial in `n` at fixed order.
 
-**DUL (Dynamic Invariant Law):** From generator moments `{Tr(H^k)}` and a spectral radius `R`, DUL provides **certified intervals** for `p_m(t) = Tr(exp(-iHt)^m)` by bounding the exponential series tail. UGAF then runs on interval discs, propagating certification. This acts as a **pre-evolution oracle** for the G-VM.
+**DUL (Dynamic Invariant Law):** From generator moments `{Tr(H^k)}` and a spectral radius `R`, DUL provides **certified intervals** for evolution moments:
 
-**G-VM Runtime Sensors:** The Universal Laws (UL-2, UL-3, and the new **UL-4** for quartet correlation) plus **TB-4** feasibility intervals offer **phase-light** certification routes. `κ` governs regime splits, with an empirical knee near `κ ≈ 0.85`.
+```
+p_m(t) = Tr(U(t)^m) = Σ_{k≥0} [(-imt)^k / k!] * Tr(H^k)
+
+With spectral radius R and truncation at K terms:
+p_m(t) ∈ p_m^(K)(t) ± d[e^(mRt) - Σ_{k=0 to K} (mRt)^k/k!]
+```
+
+UGAF then runs on interval discs, propagating certification. This acts as a **pre-evolution oracle** for the G-VM.
+
+**G-VM Runtime Sensors:** The Universal Laws (UL-2, UL-3, and the new **UL-4** for quartet correlation) plus feasibility intervals offer **phase-light** certification routes. 
+
+**The Geometric Complexity κ:**
+```
+κ = √[1 - (F_AB + F_AO + F_BO) + 2*Re(⟨A|B⟩⟨B|O⟩⟨O|A⟩)]
+```
+governs regime splits, with an empirical knee near `κ ≈ 0.85`.
+
+**TB-2 Feasibility Interval** (certified bounds without full phase):
+```
+F_BO ∈ [(√(F_AB*F_AO) - √((1-F_AB)(1-F_AO) - κ²))², 
+        (√(F_AB*F_AO) + √((1-F_AB)(1-F_AO) - κ²))²]
+```
 
 ---
 
@@ -98,7 +130,7 @@ This means spectral edges, overlaps, amplitudes, and correlators are not separat
 
 ---
 
-### 6. Moment Holography, Flow Alignment & Computational Complexity
+## 6. Moment Holography, Flow Alignment & Computational Complexity
 
 **Moment Holography:** Quantum observables naturally live on a **moment manifold** rather than in Hilbert space. The Cayley-Hamilton theorem defines **characteristic curves** along which quantum information flows deterministically. The computational difficulty of an observable is determined by its alignment with these geometric flow lines.
 
@@ -122,7 +154,7 @@ This means spectral edges, overlaps, amplitudes, and correlators are not separat
 
 ## 7. Conclusion
 
-The Quantum Geometric Computation framework demonstrates that quantum computation can be reformulated entirely in terms of geometric invariants and their flows. The successful validation at machine precision for recurrence-based methods and controlled approximation for spectral methods supports the theoretical foundation while clearly delineating the framework's capabilities and limitations.
+The Quantum Geometric Computation framework demonstrates that quantum computation can be reformulated entirely in terms of geometric invariants and their flows. The unified extractor framework shows that all observables—spectral edges, overlaps, amplitudes, and correlators—are projections of a single Cayley-Hamilton master flow. The successful validation at machine precision for recurrence-based methods and controlled approximation for spectral methods supports the theoretical foundation while clearly delineating the framework's capabilities and limitations.
 
 The path forward involves systematically identifying which physical observables are naturally flow-aligned, developing efficient seed generation methods for broader problem classes, and potentially discovering new geometric transformations that expand the space of polynomially accessible observables.
 
