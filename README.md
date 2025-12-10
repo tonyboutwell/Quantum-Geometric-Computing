@@ -43,30 +43,6 @@ Critical threshold at **κ ≈ 0.85** marks transitions between:
 
 This threshold has been validated across multiple domains.
 
-## Validated Applications
-
-### Hubbard Model Solver
-The `Examples/Hubbard-Model/` directory contains a working solver achieving **~0.5% mean error** against Simons Collaboration QMC benchmarks. Runs in milliseconds vs. hours for traditional methods.
-
-### κ-Threshold Universality
-The κ ≈ 0.85 threshold validated in:
-- **Quantum systems**: 10× error amplification at threshold
-- **Fluid turbulence**: Johns Hopkins Database, p < 10⁻⁸⁰
-- **Gravitational chaos**: 3-body problem, 77% prediction accuracy
-- **Protein folding**: 88% success rate with κ-guided intervention
-
-### Chaos Prediction
-Geometric features (κ trajectories, curvature) predict chaotic vs. regular behavior without simulation. See `TECHNICAL_WHITEPAPER_V3_GEOMETRIC_CHAOS_PREDICTION.md`.
-
-## Key Results
-
-| Domain | Method | Result |
-|--------|--------|--------|
-| 2D Hubbard | Moment-based solver | 0.48% mean error vs QMC |
-| Quantum circuits | UL-law validation | Machine precision |
-| 3-body chaos | κ-threshold prediction | 77% accuracy |
-| Turbulence | κ correlation | p < 10⁻⁸⁰ significance |
-
 ## Repository Structure
 
 ```
@@ -110,19 +86,7 @@ python proof_02_purity_bridge.py
 
 ## Current Status
 
-QGC is an active research project. The Hubbard solver is validated and usable. Other components (chaos prediction, protein folding) are documented but experimental.
-
-**What works now:**
-- Hubbard model ground state energies (half-filling)
-- Grover's algorithm via invariants
-- QAOA MaxCut invariant prediction
-- UL-law validation suite (proofs 01-03)
-
-**In development:**
-- Doping support for Hubbard
-- Additional UL proofs (04-10)
-- Hardware validation on quantum devices
-- Chaos prediction toolkit
+QGC is an active research project. 
 
 ## References
 
@@ -135,6 +99,8 @@ QGC is an active research project. The Hubbard solver is validated and usable. O
 Tony Boutwell  
 Director of AI and Creative Technologies  
 Meridian Community College
+
+tony.boutwell@meridiancc.edu
 
 ## License
 
